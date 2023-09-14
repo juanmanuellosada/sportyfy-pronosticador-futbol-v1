@@ -30,6 +30,7 @@ public class PronosticadorFutbol implements Pronosticador {
             // Empate
             return new Pronostico(null);
         }
+
     }
 
     @Override
@@ -40,11 +41,12 @@ public class PronosticadorFutbol implements Pronosticador {
 
     // Método para calcular el promedio de goles de un equipo en partidos anteriores
 // Método para calcular el promedio de goles de un equipo en todos los partidos
-    private double calcularPromedioGolesEquipo(Equipo equipo, List<Partido> partidos) {
+    private double calcularPromedioGolesEquipo(Equipo equipo, List<Partido> partidos) throws RuntimeException {
         List<Partido> partidosDelEquipo = obtenerPartidosDeEquipo(equipo, partidos);
 
         if (partidosDelEquipo.isEmpty()) {
-            return 0.0; // Si no hay partidos del equipo, el promedio es 0.
+            //return 0.0; // Si no hay partidos del equipo, el promedio es 0.
+            throw new RuntimeException("No existen Partidos para el equipo solicitado :"+ equipo.getNombre());
         }
 
         double totalGoles = partidosDelEquipo.stream()
