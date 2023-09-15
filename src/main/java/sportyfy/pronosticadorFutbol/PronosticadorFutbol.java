@@ -43,9 +43,8 @@ public class PronosticadorFutbol extends Observable implements Pronosticador {
         return deporte;
     }
 
-
     // Método para calcular el promedio de goles de un equipo en partidos anteriores
-// Método para calcular el promedio de goles de un equipo en todos los partidos
+    // Método para calcular el promedio de goles de un equipo en todos los partidos
     private double calcularPromedioGolesEquipo(Equipo equipo, List<Partido> partidos) {
         List<Partido> partidosDelEquipo = obtenerPartidosDeEquipo(equipo, partidos);
 
