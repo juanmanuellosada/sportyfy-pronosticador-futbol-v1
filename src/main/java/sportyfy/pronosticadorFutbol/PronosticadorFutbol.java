@@ -6,11 +6,14 @@ import sportyfy.core.futbol.Equipo;
 import sportyfy.core.futbol.Partido;
 
 import java.util.List;
+import java.util.Observable;
 import java.util.stream.Collectors;
 
-public class PronosticadorFutbol implements Pronosticador {
+public class PronosticadorFutbol extends Observable implements Pronosticador {
 
     String deporte;
+
+    Pronostico pronosticoActual;
 
     public PronosticadorFutbol() {
         this.deporte = "Futbol";
@@ -23,13 +26,16 @@ public class PronosticadorFutbol implements Pronosticador {
         double golesEquipoVisitante = calcularPromedioGolesEquipo(equipoVisitante, partidosAnteriores);
 
         if (golesEquipoLocal > golesEquipoVisitante) {
-            return new Pronostico(equipoLocal);
+            pronosticoActual = new Pronostico(equipoLocal);
         } else if (golesEquipoLocal < golesEquipoVisitante) {
-            return new Pronostico(equipoVisitante);
+            pronosticoActual = new Pronostico(equipoVisitante);
         } else {
             // Empate
-            return new Pronostico(null);
+            pronosticoActual = new Pronostico(null);
         }
+        setChanged(); // Marcar que ha habido un cambio
+        notifyObservers(pronosticoActual); // Notificar a los observadores con el pronóstico actual
+        return pronosticoActual;
     }
 
     @Override
