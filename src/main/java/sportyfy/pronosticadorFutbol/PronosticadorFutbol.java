@@ -5,6 +5,7 @@ import sportyfy.core.Pronostico;
 import sportyfy.core.futbol.Equipo;
 import sportyfy.core.futbol.Partido;
 
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Observable;
 import java.util.stream.Collectors;
@@ -21,6 +22,10 @@ public class PronosticadorFutbol extends Observable implements Pronosticador {
 
     @Override
     public Pronostico pronosticar(Equipo equipoLocal, Equipo equipoVisitante, List<Partido> partidosAnteriores) {
+
+        if(partidosAnteriores.isEmpty()) {
+            throw new RuntimeException("No hay información de partidos para realizar el pronóstico");
+        }
 
         double golesEquipoLocal = calcularPromedioGolesEquipo(equipoLocal, partidosAnteriores);
         double golesEquipoVisitante = calcularPromedioGolesEquipo(equipoVisitante, partidosAnteriores);
