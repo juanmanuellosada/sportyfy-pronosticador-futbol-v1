@@ -2,8 +2,8 @@ package sportyfy.pronosticadorFutbol;
 
 import sportyfy.core.Pronosticador;
 import sportyfy.core.Pronostico;
-import sportyfy.core.futbol.Equipo;
-import sportyfy.core.futbol.Partido;
+import sportyfy.core.entidades.Equipo;
+import sportyfy.core.entidades.Partido;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +23,13 @@ public class PronosticadorFutbol implements Pronosticador {
         double golesEquipoLocal = calcularPromedioGolesEquipo(equipoLocal, partidosAnteriores);
         double golesEquipoVisitante = calcularPromedioGolesEquipo(equipoVisitante, partidosAnteriores);
 
-        return (golesEquipoLocal > golesEquipoVisitante) ? new Pronostico(equipoLocal) : new Pronostico(equipoVisitante);
+        if (golesEquipoLocal > golesEquipoVisitante) {
+            return new Pronostico(equipoLocal);
+        } else if (golesEquipoLocal < golesEquipoVisitante) {
+            return new Pronostico(equipoVisitante);
+        } else {
+            return new Pronostico(null);
+        }
     }
 
     @Override
