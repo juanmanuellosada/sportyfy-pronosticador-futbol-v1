@@ -6,16 +6,13 @@ import sportyfy.core.entidades.Equipo;
 import sportyfy.core.entidades.Partido;
 import sportyfy.core.PronosticoNull;
 
-import java.util.EmptyStackException;
+
 import java.util.List;
-import java.util.Observable;
 import java.util.stream.Collectors;
 
-public class PronosticadorFutbol extends Observable implements Pronosticador {
+public class PronosticadorFutbol implements Pronosticador {
 
-    String deporte;
-
-    Pronostico pronosticoActual;
+    private final String deporte;
 
     public PronosticadorFutbol() {
         this.deporte = "Futbol";
@@ -23,25 +20,19 @@ public class PronosticadorFutbol extends Observable implements Pronosticador {
 
     @Override
     public Pronostico pronosticar(Equipo equipoLocal, Equipo equipoVisitante, List<Partido> partidosAnteriores) {
-
-        if(partidosAnteriores.isEmpty()) {
-            throw new RuntimeException("No hay información de partidos para realizar el pronóstico");
-        }
+        validarDatos(equipoLocal, equipoVisitante, partidosAnteriores);
 
         double golesEquipoLocal = calcularPromedioGolesEquipo(equipoLocal, partidosAnteriores);
         double golesEquipoVisitante = calcularPromedioGolesEquipo(equipoVisitante, partidosAnteriores);
 
         if (golesEquipoLocal > golesEquipoVisitante) {
-            pronosticoActual = new Pronostico(equipoLocal);
+            return new Pronostico(equipoLocal);
         } else if (golesEquipoLocal < golesEquipoVisitante) {
-            pronosticoActual = new Pronostico(equipoVisitante);
+            return new Pronostico(equipoVisitante);
         } else {
             // Empate
-            pronosticoActual = new PronosticoNull();
+            return new PronosticoNull();
         }
-        setChanged(); // Marcar que ha habido un cambio
-        notifyObservers(pronosticoActual); // Notificar a los observadores con el pronóstico actual
-        return pronosticoActual;
     }
 
     @Override
@@ -49,8 +40,16 @@ public class PronosticadorFutbol extends Observable implements Pronosticador {
         return deporte;
     }
 
-    // Método para calcular el promedio de goles de un equipo en partidos anteriores
-    // Método para calcular el promedio de goles de un equipo en todos los partidos
+    private void validarDatos(Equipo equipoLocal, Equipo equipoVisitante, List<Partido> partidosAnteriores) {
+        if (partidosAnteriores.isEmpty()) {
+            throw new IllegalArgumentException("No hay información de partidos para realizar el pronóstico");
+        }
+
+        if (equipoLocal == null || equipoVisitante == null) {
+            throw new IllegalArgumentException("No se puede realizar el pronóstico con equipos nulos");
+        }
+    }
+
     private double calcularPromedioGolesEquipo(Equipo equipo, List<Partido> partidos) {
         List<Partido> partidosDelEquipo = obtenerPartidosDeEquipo(equipo, partidos);
 
@@ -58,20 +57,17 @@ public class PronosticadorFutbol extends Observable implements Pronosticador {
             return 0.0; // Si no hay partidos del equipo, el promedio es 0.
         }
 
-        double totalGoles = partidosDelEquipo.stream()
-                .mapToDouble(partido -> {
-                    if (partido.esLocal(equipo)) {
-                        return partido.getGolesLocal();
-                    } else {
-                        return partido.getGolesVisitante();
-                    }
-                })
-                .sum();
+        double totalGoles = calcularTotalGolesEquipo(equipo, partidosDelEquipo);
 
         return totalGoles / partidosDelEquipo.size();
     }
 
-    // Método para obtener la lista de partidos de un equipo
+    private double calcularTotalGolesEquipo(Equipo equipo, List<Partido> partidos) {
+        return partidos.stream()
+                .mapToDouble(partido -> partido.esLocal(equipo) ? partido.getGolesLocal() : partido.getGolesVisitante())
+                .sum();
+    }
+
     private List<Partido> obtenerPartidosDeEquipo(Equipo equipo, List<Partido> partidos) {
         return partidos.stream()
                 .filter(partido -> partido.participa(equipo))
