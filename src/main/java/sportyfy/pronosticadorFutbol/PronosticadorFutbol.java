@@ -3,8 +3,8 @@ package sportyfy.pronosticadorFutbol;
 import sportyfy.core.Pronosticador;
 import sportyfy.core.Pronostico;
 import sportyfy.core.entidades.Equipo;
-import sportyfy.core.entidades.Partido;
 import sportyfy.core.PronosticoNull;
+import sportyfy.core.entidades.PartidoAnterior;
 
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class PronosticadorFutbol implements Pronosticador {
     }
 
     @Override
-    public Pronostico pronosticar(Equipo equipoLocal, Equipo equipoVisitante, List<Partido> partidosAnteriores) {
+    public Pronostico pronosticar(Equipo equipoLocal, Equipo equipoVisitante, List<PartidoAnterior> partidosAnteriores) {
         validarDatos(equipoLocal, equipoVisitante, partidosAnteriores);
 
         double golesEquipoLocal = calcularPromedioGolesEquipo(equipoLocal, partidosAnteriores);
@@ -40,7 +40,7 @@ public class PronosticadorFutbol implements Pronosticador {
         return deporte;
     }
 
-    private void validarDatos(Equipo equipoLocal, Equipo equipoVisitante, List<Partido> partidosAnteriores) {
+    private void validarDatos(Equipo equipoLocal, Equipo equipoVisitante, List<PartidoAnterior> partidosAnteriores) {
         if (partidosAnteriores.isEmpty()) {
             throw new IllegalArgumentException("No hay información de partidos para realizar el pronóstico");
         }
@@ -50,8 +50,8 @@ public class PronosticadorFutbol implements Pronosticador {
         }
     }
 
-    private double calcularPromedioGolesEquipo(Equipo equipo, List<Partido> partidos) {
-        List<Partido> partidosDelEquipo = obtenerPartidosDeEquipo(equipo, partidos);
+    private double calcularPromedioGolesEquipo(Equipo equipo, List<PartidoAnterior> partidos) {
+        List<PartidoAnterior> partidosDelEquipo = obtenerPartidosDeEquipo(equipo, partidos);
 
         if (partidosDelEquipo.isEmpty()) {
             return 0.0; // Si no hay partidos del equipo, el promedio es 0.
@@ -62,13 +62,13 @@ public class PronosticadorFutbol implements Pronosticador {
         return totalGoles / partidosDelEquipo.size();
     }
 
-    private double calcularTotalGolesEquipo(Equipo equipo, List<Partido> partidos) {
+    private double calcularTotalGolesEquipo(Equipo equipo, List<PartidoAnterior> partidos) {
         return partidos.stream()
                 .mapToDouble(partido -> partido.esLocal(equipo) ? partido.getGolesLocal() : partido.getGolesVisitante())
                 .sum();
     }
 
-    private List<Partido> obtenerPartidosDeEquipo(Equipo equipo, List<Partido> partidos) {
+    private List<PartidoAnterior> obtenerPartidosDeEquipo(Equipo equipo, List<PartidoAnterior> partidos) {
         return partidos.stream()
                 .filter(partido -> partido.participa(equipo))
                 .collect(Collectors.toList());
