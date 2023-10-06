@@ -2,8 +2,9 @@ package sportyfy.pronosticadorFutbol;
 
 import sportyfy.core.Pronosticador;
 import sportyfy.core.Pronostico;
-import sportyfy.core.futbol.Equipo;
-import sportyfy.core.futbol.Partido;
+import sportyfy.core.entidades.Equipo;
+import sportyfy.core.entidades.Partido;
+import sportyfy.core.PronosticoNull;
 
 import java.util.EmptyStackException;
 import java.util.List;
@@ -36,7 +37,7 @@ public class PronosticadorFutbol extends Observable implements Pronosticador {
             pronosticoActual = new Pronostico(equipoVisitante);
         } else {
             // Empate
-            pronosticoActual = new Pronostico(null);
+            pronosticoActual = new PronosticoNull();
         }
         setChanged(); // Marcar que ha habido un cambio
         notifyObservers(pronosticoActual); // Notificar a los observadores con el pronóstico actual
