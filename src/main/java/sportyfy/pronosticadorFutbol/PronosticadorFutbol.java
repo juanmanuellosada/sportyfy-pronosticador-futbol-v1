@@ -27,12 +27,12 @@ public class PronosticadorFutbol implements Pronosticador {
         double golesEquipoVisitante = calcularPromedioGolesEquipo(partidoFuturo.getEquipoVisitante(), partidosAnteriores);
 
         if (golesEquipoLocal > golesEquipoVisitante) {
-            return new Pronostico(partidoFuturo.getEquipoLocal());
+            return new Pronostico(partidoFuturo.getEquipoLocal(), partidoFuturo);
         } else if (golesEquipoLocal < golesEquipoVisitante) {
-            return new Pronostico(partidoFuturo.getEquipoVisitante());
+            return new Pronostico(partidoFuturo.getEquipoVisitante(), partidoFuturo);
         } else {
             // Empate
-            return new PronosticoNull();
+            return new PronosticoNull(partidoFuturo);
         }
     }
 
@@ -43,11 +43,11 @@ public class PronosticadorFutbol implements Pronosticador {
 
     private void validarDatos(Equipo equipoLocal, Equipo equipoVisitante, List<PartidoJugado> partidosAnteriores) {
         if (partidosAnteriores.isEmpty()) {
-            throw new IllegalArgumentException("No hay informaciÃ³n de partidos para realizar el pronÃ³stico");
+            throw new IllegalArgumentException("No hay información de partidos para realizar el pronóstico");
         }
 
         if (equipoLocal == null || equipoVisitante == null) {
-            throw new IllegalArgumentException("No se puede realizar el pronÃ³stico con equipos nulos");
+            throw new IllegalArgumentException("No se puede realizar el pronóstico con equipos nulos");
         }
     }
 
