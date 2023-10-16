@@ -43,11 +43,11 @@ public class PronosticadorFutbol implements Pronosticador {
 
     private void validarDatos(Equipo equipoLocal, Equipo equipoVisitante, List<PartidoJugado> partidosAnteriores) {
         if (partidosAnteriores.isEmpty()) {
-            throw new IllegalArgumentException("No hay información de partidos para realizar el pronóstico");
+            throw new IllegalArgumentException("No hay informacion de partidos para realizar el pronostico");
         }
 
         if (equipoLocal == null || equipoVisitante == null) {
-            throw new IllegalArgumentException("No se puede realizar el pronóstico con equipos nulos");
+            throw new IllegalArgumentException("No se puede realizar el pronï¿½stico con equipos nulos");
         }
     }
 
